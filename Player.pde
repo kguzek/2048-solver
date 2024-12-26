@@ -2,8 +2,8 @@ class Player implements BotOrPlayer{
   int score;
   int moves;
   boolean gameOver = true;
-  boolean gridIsFull;
   int numMergableTiles;
+  int numFreeTiles;
   int textCycle;
   Tile[][] grid;
   
@@ -16,16 +16,23 @@ class Player implements BotOrPlayer{
     cloned.score = score;
     cloned.moves = moves;
     cloned.gameOver = gameOver;
-    cloned.gridIsFull = gridIsFull;
     cloned.numMergableTiles = numMergableTiles;
+    cloned.numFreeTiles = numFreeTiles;
     cloned.textCycle = textCycle;
-    cloned.grid = grid;
+    cloned.grid = new Tile[Settings.columns][Settings.rows];
+    for (int y = 0; y < Settings.rows; y++) {
+      for (int x = 0; x < Settings.columns; x++) {
+        Tile tile = grid[y][x];
+        if (tile == null) continue;
+        cloned.grid[y][x] = new Tile(tile.value);
+      }
+    }
     return cloned;
   }
   
   
   void generateRandomTile() {
-    if (gridIsFull) return;
+    if (numFreeTiles == 0) return;
     int x = -1;
     int y = -1;
     while(x == -1 || y == -1 || grid[y][x] != null) {
@@ -42,8 +49,8 @@ class Player implements BotOrPlayer{
     score = 0;
     moves = 0;
     gameOver = false;
-    gridIsFull = false;
     numMergableTiles = 0;
+    numFreeTiles = Settings.columns * Settings.rows - Settings.startingTiles;
     textCycle = 0;
     grid = new Tile[Settings.columns][Settings.rows];
     for (int i = 0; i < Settings.startingTiles; i++) {
@@ -88,13 +95,13 @@ class Player implements BotOrPlayer{
   }
   
   void checkGrid() {
-    gridIsFull = true;
     numMergableTiles = 0;
+    numFreeTiles = 0;
     for (int y = 0; y < Settings.rows; y++) {
       for (int x = 0; x < Settings.columns; x++) {
         Tile tile = grid[y][x];
         if (tile == null) {
-          gridIsFull = false;
+          numFreeTiles++;
           continue;
         }
         score = max(tile.value, score);

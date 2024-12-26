@@ -5,8 +5,7 @@ void settings() {
 }
 
 void setup() {
-  // player = new Bot();
-  player = new Player();
+  player = new Bot();
 }
 
 void draw() {

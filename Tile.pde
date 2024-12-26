@@ -9,6 +9,10 @@ class Tile {
     }
   }
   
+  Tile(int value) {
+    this.value = value;
+  }
+  
   void fillColor() {
     // Stage is between 0 and 11
     int stage = floor(log(value) / log(2));
