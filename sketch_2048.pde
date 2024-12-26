@@ -22,19 +22,19 @@ void keyPressed() {
   switch(pressedKey) {
     case UP:
       case 'w':
-      player.move(MoveUp);
+      player.move(DirectionUp);
       break;
     case RIGHT:
       case 'd':
-      player.move(MoveRight);
+      player.move(DirectionRight);
       break;
     case DOWN:
       case 's':
-      player.move(MoveDown);
+      player.move(DirectionDown);
       break;
     case LEFT:
       case 'a':
-      player.move(MoveLeft);
+      player.move(DirectionLeft);
       break;
     case ' ':
       player.reset();

@@ -1,5 +1,5 @@
 interface BotOrPlayer {
-  void move(Move move);
+  void move(Direction direction);
   void draw();
   void reset();
 }

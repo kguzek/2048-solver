@@ -118,15 +118,15 @@ class Player implements BotOrPlayer{
   }
   
   
-  void move(Move move) {
+  void move(Direction direction) {
     if (gameOver) return;
     for (int i = 0; i < Settings.rows; i++) {
       for (int j = 0; j < Settings.columns; j++) {
         //Check if moving toward right or bottom edge
         int y = i;
         int x = j;
-        if (move.dx + move.dy == 1) {
-          if (move.dy == 0) {
+        if (direction.dx + direction.dy == 1) {
+          if (direction.dy == 0) {
             x = Settings.columns - 1 - x;
           } else {
             y = Settings.rows - 1 - y;
@@ -138,11 +138,11 @@ class Player implements BotOrPlayer{
         int nextY = y;
         Tile newTile = null;
         Tile adjacentTile = null;
-        while(isValidTile(nextX + move.dx, nextY + move.dy)) {
-          adjacentTile = grid[nextY + move.dy][nextX + move.dx];
+        while(isValidTile(nextX + direction.dx, nextY + direction.dy)) {
+          adjacentTile = grid[nextY + direction.dy][nextX + direction.dx];
           if (adjacentTile != null) break;
-          nextX += move.dx;
-          nextY += move.dy;
+          nextX += direction.dx;
+          nextY += direction.dy;
         }
         if (adjacentTile != null && adjacentTile.value == tile.value) {
           adjacentTile.value = 2 * tile.value;
