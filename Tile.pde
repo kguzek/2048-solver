@@ -2,7 +2,7 @@ class Tile {
   int value;
   
   Tile() {
-    if (random(1) < 0.1) {
+    if (random(1) < Settings.generate4Probability) {
       value = 4;
     } else {
       value = 2;

@@ -10,4 +10,6 @@ static class Settings {
   
   static int startingTiles = 2;
   static int textBlinkDuration = 50;
+  // The probability of generating a 4 instead of a 2
+  static float generate4Probability = 0.1;
 }

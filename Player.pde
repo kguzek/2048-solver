@@ -1,17 +1,31 @@
-class Player {
-  int score = 0;
-  int moves = 0;
-  boolean gameOver = false;
-  int textCycle = 0;
-  Tile[][] grid = new Tile[Settings.columns][Settings.rows];
+class Player implements BotOrPlayer{
+  int score;
+  int moves;
+  boolean gameOver = true;
+  boolean gridIsFull;
+  int numMergableTiles;
+  int textCycle;
+  Tile[][] grid;
   
   Player() {
-    for (int i = 0; i < Settings.startingTiles; i++) {
-      generateRandomTile();
-    }
+    reset();
   }
   
+  Player clone() {
+    Player cloned = new Player();
+    cloned.score = score;
+    cloned.moves = moves;
+    cloned.gameOver = gameOver;
+    cloned.gridIsFull = gridIsFull;
+    cloned.numMergableTiles = numMergableTiles;
+    cloned.textCycle = textCycle;
+    cloned.grid = grid;
+    return cloned;
+  }
+  
+  
   void generateRandomTile() {
+    if (gridIsFull) return;
     int x = -1;
     int y = -1;
     while(x == -1 || y == -1 || grid[y][x] != null) {
@@ -21,6 +35,20 @@ class Player {
     Tile tile = new Tile();
     grid[y][x] = tile;
     score = max(score, tile.value);
+  }
+  
+  void reset() {
+    if (!gameOver) return;
+    score = 0;
+    moves = 0;
+    gameOver = false;
+    gridIsFull = false;
+    numMergableTiles = 0;
+    textCycle = 0;
+    grid = new Tile[Settings.columns][Settings.rows];
+    for (int i = 0; i < Settings.startingTiles; i++) {
+      generateRandomTile();
+    }
   }
   
   void draw() {
@@ -37,6 +65,8 @@ class Player {
     fill(64, 64, 64);
     textAlign(LEFT, TOP);
     text("Score: " + score, Settings.padding, Settings.padding);
+    textAlign(CENTER, TOP);
+    text("Available moves: " + numMergableTiles, Settings.screenWidth / 2, Settings.padding);
     textAlign(RIGHT, TOP);
     text("Moves: " + moves, Settings.screenWidth - Settings.padding, Settings.padding);
     if (!gameOver) return;
@@ -58,30 +88,45 @@ class Player {
   }
   
   void checkGrid() {
-    boolean gridIsFull = true;
-    for (Tile[] row : grid) {
-      for (Tile tile : row) {
+    gridIsFull = true;
+    numMergableTiles = 0;
+    for (int y = 0; y < Settings.rows; y++) {
+      for (int x = 0; x < Settings.columns; x++) {
+        Tile tile = grid[y][x];
         if (tile == null) {
           gridIsFull = false;
           continue;
         }
         score = max(tile.value, score);
+        for (int dy = -1; dy <= 1; dy++) {
+          for (int dx = -1; dx <= 1; dx++) {
+            if (dx == 0 && dy == 0 || dx * dy != 0) continue;
+            if (!isValidTile(x + dx, y + dy)) continue;
+            Tile adjacentTile = grid[y + dy][x + dx];
+            if (adjacentTile == null || adjacentTile.value == tile.value) {
+              numMergableTiles++;
+              continue;
+            }
+          }
+        }
       }
     }
-    if (gridIsFull || score >= 2048) {
+    numMergableTiles /= 2;
+    if (numMergableTiles == 0 || score >= 2048) {
       gameOver = true;
     }
   }
   
   
-  void move(int dx, int dy) {
+  void move(Move move) {
+    if (gameOver) return;
     for (int i = 0; i < Settings.rows; i++) {
       for (int j = 0; j < Settings.columns; j++) {
-        // Check if moving toward right or bottom edge
+        //Check if moving toward right or bottom edge
         int y = i;
         int x = j;
-        if (dx + dy == 1) {
-          if (dy == 0) {
+        if (move.dx + move.dy == 1) {
+          if (move.dy == 0) {
             x = Settings.columns - 1 - x;
           } else {
             y = Settings.rows - 1 - y;
@@ -93,11 +138,11 @@ class Player {
         int nextY = y;
         Tile newTile = null;
         Tile adjacentTile = null;
-        while(isValidTile(nextX + dx, nextY + dy)) {
-          adjacentTile = grid[nextY + dy][nextX + dx];
+        while(isValidTile(nextX + move.dx, nextY + move.dy)) {
+          adjacentTile = grid[nextY + move.dy][nextX + move.dx];
           if (adjacentTile != null) break;
-          nextX += dx;
-          nextY += dy;
+          nextX += move.dx;
+          nextY += move.dy;
         }
         if (adjacentTile != null && adjacentTile.value == tile.value) {
           adjacentTile.value = 2 * tile.value;
@@ -114,8 +159,6 @@ class Player {
     }
     moves += 1;
     checkGrid();
-    if (!gameOver) {
-      generateRandomTile();
-    }
+    generateRandomTile();
   }
 }
