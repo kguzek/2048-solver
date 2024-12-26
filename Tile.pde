@@ -20,7 +20,7 @@ class Tile {
   
   void draw(int x, int y) {
     int drawX = x * (Settings.columnWidth + Settings.padding) + Settings.padding;
-    int drawY = y * (Settings.rowHeight + Settings.padding) + Settings.padding;
+    int drawY = Settings.ribbonHeight + y * (Settings.rowHeight + Settings.padding) + Settings.padding;
     fillColor();
     noStroke();
     rect(drawX, drawY, Settings.columnWidth, Settings.rowHeight);

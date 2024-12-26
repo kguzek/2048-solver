@@ -13,24 +13,28 @@ void draw() {
   player.draw();
 }
 
-
 void keyPressed() {
   if (player.gameOver) return;
-  switch (key) {
-  case CODED:
-    switch (keyCode) {
-      case UP:
-        player.move(0, -1);
-        break;
-      case RIGHT:
-        player.move(1, 0);
-        break;
-      case DOWN:
-        player.move(0, 1);
-        break;
-      case LEFT:
-        player.move(-1, 0);
-        break;
-    }
+  int pressedKey = key;
+  if (pressedKey == CODED) {
+    pressedKey = keyCode;
+  }
+  switch(pressedKey) {
+    case UP:
+      case 'w':
+      player.move(0, -1);
+      break;
+    case RIGHT:
+      case 'd':
+      player.move(1, 0);
+      break;
+    case DOWN:
+      case 's':
+      player.move(0, 1);
+      break;
+    case LEFT:
+      case 'a':
+      player.move( -1, 0);
+      break;
   }
 }

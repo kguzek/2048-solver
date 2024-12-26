@@ -14,7 +14,7 @@ class Player {
   void generateRandomTile() {
     int x = -1;
     int y = -1;
-    while (x == -1 || y == -1 || grid[y][x] != null) {
+    while(x == -1 || y == -1 || grid[y][x] != null) {
       x = floor(random(Settings.columns));
       y = floor(random(Settings.rows));
     }
@@ -24,6 +24,8 @@ class Player {
   }
   
   void draw() {
+    fill(192, 192, 192);
+    rect(0, 0, Settings.screenWidth, Settings.ribbonHeight);
     for (int y = 0; y < grid.length; y++) {
       Tile[] row = grid[y];
       for (int x = 0; x < row.length; x++) {
@@ -32,10 +34,11 @@ class Player {
         tile.draw(x, y);
       }
     }
-    textAlign(RIGHT, TOP);
     fill(64, 64, 64);
-    text("Score: " + score, Settings.screenWidth, Settings.padding);
-    text("Moves: " + moves, Settings.screenWidth, Settings.padding * 6);
+    textAlign(LEFT, TOP);
+    text("Score: " + score, Settings.padding, Settings.padding);
+    textAlign(RIGHT, TOP);
+    text("Moves: " + moves, Settings.screenWidth - Settings.padding, Settings.padding);
     if (!gameOver) return;
     textCycle = (textCycle + 1) % Settings.textBlinkDuration;
     if (textCycle >= Settings.textBlinkDuration / 2) return;
@@ -69,7 +72,7 @@ class Player {
       gameOver = true;
     }
   }
-        
+  
   
   void move(int dx, int dy) {
     for (int i = 0; i < Settings.rows; i++) {
@@ -90,7 +93,7 @@ class Player {
         int nextY = y;
         Tile newTile = null;
         Tile adjacentTile = null;
-        while (isValidTile(nextX + dx, nextY + dy)) {
+        while(isValidTile(nextX + dx, nextY + dy)) {
           adjacentTile = grid[nextY + dy][nextX + dx];
           if (adjacentTile != null) break;
           nextX += dx;
